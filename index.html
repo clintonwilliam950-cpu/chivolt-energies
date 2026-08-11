@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!--
+  CHIVOLT Energies — Waste to Watts donation site
+  Built as a personal/volunteer project. Provided as-is, "raw file" included
+  intentionally so the CHIVOLT Energies team has full ownership and can edit,
+  host, or hand this off freely. The builder of this file assumes no liability
+  for its use, content accuracy, or any funds collected through it — that
+  responsibility sits with whoever operates the site and payment accounts.
+
+  BEFORE GOING LIVE, replace:
+  1. All text inside [BRACKETS] — these are placeholders (funding goal, raised
+     amount, timeline, contact info, real Paystack/Flutterwave public keys).
+  2. The Paystack/Flutterwave keys marked "REPLACE_WITH_..." in the <script> below.
+  3. Social/contact links in the footer.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHIVOLT Energies — Waste to Watts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil-900:#17160f;
+    --soil-800:#211f17;
+    --soil-700:#2c2820;
+    --parchment:#f2ece0;
+    --parchment-dim:#a89d87;
+    --methane:#7c9a58;
+    --methane-dim:#4d5f3a;
+    --spark:#f2b705;
+    --spark-dim:#8a6a12;
+    --ember:#d9622b;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    background:var(--soil-900);
+    color:var(--parchment);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
+  .eyebrow{
+    font-size:0.75rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--methane);
+    font-weight:600;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(23,22,15,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(242,236,224,0.08);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif;
+    font-weight:700; font-size:1.15rem;
+    color:var(--parchment);
+    text-decoration:none;
+  }
+  .logo-mark{
+    width:26px; height:26px;
+    position:relative;
+  }
+  .logo-mark svg{width:100%; height:100%;}
+  nav .cta-btn{
+    background:var(--spark);
+    color:var(--soil-900);
+    font-weight:700;
+    font-size:0.85rem;
+    padding:10px 20px;
+    border-radius:999px;
+    text-decoration:none;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  nav .cta-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(242,183,5,0.25); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:88px 0 64px;
+    overflow:hidden;
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:48px;
+    align-items:center;
+  }
+  @media(max-width:860px){
+    .hero .wrap{grid-template-columns:1fr; padding-top:0;}
+  }
+  .hero h1{
+    font-size:clamp(2.3rem, 5vw, 3.4rem);
+    line-height:1.06;
+    margin:14px 0 20px;
+    color:var(--parchment);
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--spark);
+  }
+  .hero p.lede{
+    font-size:1.08rem;
+    color:var(--parchment-dim);
+    max-width:46ch;
+    margin-bottom:30px;
+  }
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--spark);
+    color:var(--soil-900);
+    font-weight:700;
+    padding:14px 26px;
+    border-radius:999px;
+    text-decoration:none;
+    border:none;
+    cursor:pointer;
+    font-size:0.95rem;
+    font-family:inherit;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 22px rgba(242,183,5,0.28); }
+  .btn-ghost{
+    border:1px solid rgba(242,236,224,0.25);
+    color:var(--parchment);
+    padding:14px 26px;
+    border-radius:999px;
+    text-decoration:none;
+    font-size:0.95rem;
+    font-weight:600;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--methane); background:rgba(124,154,88,0.08); }
+
+  /* ---------- SIGNATURE: digester-to-spark pipeline ---------- */
+  .pipeline{
+    position:relative;
+    background:var(--soil-800);
+    border:1px solid rgba(242,236,224,0.08);
+    border-radius:20px;
+    padding:28px 20px 22px;
+  }
+  .pipeline-title{
+    font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--parchment-dim); margin-bottom:18px; text-align:center;
+  }
+  .pipe-stage{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .pipe-row{
+    display:flex; align-items:center; justify-content:space-between;
+    position:relative;
+  }
+  .tank{
+    width:90px; height:110px;
+    border-radius:10px 10px 34px 34px;
+    background:linear-gradient(180deg, var(--soil-700), var(--soil-800));
+    border:1.5px solid rgba(242,236,224,0.15);
+    position:relative;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .tank .fill{
+    position:absolute; bottom:0; left:0; right:0;
+    height:55%;
+    background:linear-gradient(180deg, rgba(124,154,88,0.55), rgba(124,154,88,0.85));
+  }
+  .bubble{
+    position:absolute;
+    bottom:0;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:rgba(242,236,224,0.55);
+    animation:rise 3.2s infinite ease-in;
+  }
+  .bubble:nth-child(1){ left:20%; animation-delay:0s; width:5px; height:5px;}
+  .bubble:nth-child(2){ left:50%; animation-delay:1.1s; width:7px; height:7px;}
+  .bubble:nth-child(3){ left:75%; animation-delay:2s; width:4px; height:4px;}
+  @keyframes rise{
+    0%{ transform:translateY(0); opacity:0; }
+    15%{ opacity:0.9; }
+    100%{ transform:translateY(-90px); opacity:0; }
+  }
+  .flow-arrow{
+    flex:1;
+    height:2px;
+    margin:0 10px;
+    background:repeating-linear-gradient(90deg, var(--methane-dim) 0 6px, transparent 6px 12px);
+    position:relative;
+    top:-30px;
+  }
+  .bolt{
+    width:70px; height:110px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .bolt svg{ width:44px; height:70px; filter:drop-shadow(0 0 10px rgba(242,183,5,0.55)); animation:pulse 2.4s infinite ease-in-out; }
+  @keyframes pulse{
+    0%,100%{ opacity:0.75; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.08); }
+  }
+  .pipe-labels{
+    display:flex; justify-content:space-between;
+    margin-top:10px;
+    font-size:0.72rem;
+    color:var(--parchment-dim);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+
+  /* ---------- SECTION shared ---------- */
+  section{ padding:72px 0; }
+  .section-head{ max-width:60ch; margin-bottom:40px; }
+  .section-head h2{ font-size:clamp(1.7rem,3.4vw,2.4rem); margin-top:10px; }
+
+  /* ---------- PROBLEM ---------- */
+  .problem-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:22px;
+  }
+  @media(max-width:800px){ .problem-grid{ grid-template-columns:1fr; } }
+  .problem-card{
+    background:var(--soil-800);
+    border:1px solid rgba(242,236,224,0.08);
+    border-radius:var(--radius);
+    padding:26px 22px;
+  }
+  .problem-card .num{
+    font-family:'Fraunces', serif;
+    font-size:1.6rem;
+    color:var(--ember);
+    margin-bottom:10px;
+    display:block;
+  }
+  .problem-card h3{ font-size:1.05rem; margin-bottom:8px; color:var(--parchment); }
+  .problem-card p{ font-size:0.92rem; color:var(--parchment-dim); }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .how-list{ display:flex; flex-direction:column; gap:0; }
+  .how-item{
+    display:grid; grid-template-columns:56px 1fr; gap:20px;
+    padding:22px 0;
+    border-top:1px solid rgba(242,236,224,0.08);
+  }
+  .how-item:last-child{ border-bottom:1px solid rgba(242,236,224,0.08); }
+  .how-icon{
+    width:44px; height:44px;
+    border-radius:50%;
+    background:rgba(124,154,88,0.12);
+    border:1px solid rgba(124,154,88,0.35);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .how-icon svg{ width:20px; height:20px; }
+  .how-item h3{ font-size:1.05rem; margin-bottom:4px; }
+  .how-item p{ color:var(--parchment-dim); font-size:0.92rem; max-width:56ch; }
+
+  /* ---------- PROGRESS ---------- */
+  .progress-card{
+    background:var(--soil-800);
+    border:1px solid rgba(242,236,224,0.08);
+    border-radius:20px;
+    padding:32px;
+  }
+  .progress-top{
+    display:flex; justify-content:space-between; align-items:baseline;
+    flex-wrap:wrap; gap:8px;
+    margin-bottom:14px;
+  }
+  .progress-top .amount{ font-family:'Fraunces', serif; font-size:2rem; color:var(--spark); }
+  .progress-top .goal{ color:var(--parchment-dim); font-size:0.92rem; }
+  .bar-track{
+    width:100%; height:10px; border-radius:999px;
+    background:var(--soil-700);
+    overflow:hidden;
+    margin-bottom:8px;
+  }
+  .bar-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--methane), var(--spark));
+    border-radius:999px;
+    transition:width 1.2s ease;
+  }
+  .progress-note{ font-size:0.8rem; color:var(--parchment-dim); }
+  .milestones{
+    margin-top:26px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+  }
+  @media(max-width:700px){ .milestones{grid-template-columns:1fr;} }
+  .milestone{
+    border-left:2px solid var(--methane-dim);
+    padding-left:14px;
+  }
+  .milestone .tag{ font-size:0.72rem; color:var(--methane); text-transform:uppercase; letter-spacing:0.08em; }
+  .milestone p{ font-size:0.88rem; color:var(--parchment-dim); margin-top:4px; }
+
+  /* ---------- DONATE ---------- */
+  .donate-section{
+    background:var(--soil-800);
+    border-top:1px solid rgba(242,236,224,0.08);
+    border-bottom:1px solid rgba(242,236,224,0.08);
+  }
+  .donate-card{
+    max-width:560px;
+    margin:0 auto;
+    background:var(--soil-900);
+    border:1px solid rgba(242,183,5,0.2);
+    border-radius:20px;
+    padding:34px 28px;
+    text-align:center;
+  }
+  .donate-card h2{ font-size:1.7rem; margin-bottom:10px; }
+  .donate-card > p{ color:var(--parchment-dim); font-size:0.94rem; margin-bottom:26px; }
+  .amount-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+    margin-bottom:16px;
+  }
+  @media(max-width:480px){ .amount-grid{ grid-template-columns:repeat(2,1fr); } }
+  .amount-btn{
+    background:var(--soil-700);
+    border:1px solid rgba(242,236,224,0.12);
+    color:var(--parchment);
+    padding:12px 8px;
+    border-radius:10px;
+    font-family:inherit;
+    font-weight:600;
+    font-size:0.9rem;
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .amount-btn.active, .amount-btn:hover{
+    border-color:var(--spark);
+    background:rgba(242,183,5,0.1);
+  }
+  .custom-amount{
+    display:flex; align-items:center;
+    background:var(--soil-700);
+    border:1px solid rgba(242,236,224,0.12);
+    border-radius:10px;
+    padding:4px 4px 4px 14px;
+    margin-bottom:22px;
+  }
+  .custom-amount span{ color:var(--parchment-dim); font-size:0.9rem; margin-right:6px; }
+  .custom-amount input{
+    flex:1; background:transparent; border:none; outline:none;
+    color:var(--parchment); font-family:inherit; font-size:0.95rem;
+    padding:10px 0;
+  }
+  .pay-options{ display:flex; flex-direction:column; gap:10px; }
+  .pay-btn{
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    border:none;
+    font-family:inherit;
+    font-weight:700;
+    font-size:0.96rem;
+    cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .pay-btn.paystack{ background:var(--spark); color:var(--soil-900); }
+  .pay-btn.flutterwave{ background:transparent; color:var(--parchment); border:1.5px solid rgba(242,236,224,0.25); }
+  .pay-btn:hover{ transform:translateY(-2px); }
+  .donate-note{ font-size:0.76rem; color:var(--parchment-dim); margin-top:16px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:44px 0 34px; }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px;
+    border-top:1px solid rgba(242,236,224,0.08);
+    padding-top:26px;
+  }
+  footer .f-logo{ font-family:'Fraunces', serif; font-weight:700; }
+  footer .f-links{ display:flex; gap:20px; font-size:0.85rem; color:var(--parchment-dim); }
+  footer .f-links a{ text-decoration:none; }
+  footer .f-links a:hover{ color:var(--spark); }
+  footer .f-bottom{
+    font-size:0.75rem; color:var(--parchment-dim);
+    text-align:center; margin-top:20px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="logo">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M13 2 L4 14 H11 L9 22 L20 9 H13 L13 2Z" fill="#f2b705"/>
+        </svg>
+      </span>
+      CHIVOLT Energies
+    </a>
+    <a href="#donate" class="cta-btn">Donate</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Waste to Watts · Biogas Initiative</span>
+      <h1>Turning everyday waste into <em>reliable power.</em></h1>
+      <p class="lede">CHIVOLT Energies is building a community-scale biogas-to-electricity plant that converts organic waste into clean, dependable power — cutting waste piles and power cuts at the same time.</p>
+      <div class="hero-ctas">
+        <a href="#donate" class="btn-primary">Support this project</a>
+        <a href="#how" class="btn-ghost">See how it works</a>
+      </div>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipeline-title">Waste → Biogas → Watts</div>
+      <div class="pipe-row">
+        <div class="pipe-stage">
+          <div class="tank">
+            <div class="fill"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="pipe-stage">
+          <div class="bolt">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M13 2 L4 14 H11 L9 22 L20 9 H13 L13 2Z" fill="#f2b705"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="pipe-labels">
+        <span>Digester tank</span>
+        <span>Electricity out</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The problem</span>
+      <h2>Two crises, one overlooked fix</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="num">01</span>
+        <h3>Organic waste keeps piling up</h3>
+        <p>Markets, farms, and homes generate large volumes of organic waste with no structured way to process it, so much of it is burned or dumped.</p>
+      </div>
+      <div class="problem-card">
+        <span class="num">02</span>
+        <h3>Power is unreliable and costly</h3>
+        <p>Grid electricity is inconsistent and generator fuel is expensive, leaving households and small businesses to absorb the cost of constant outages.</p>
+      </div>
+      <div class="problem-card">
+        <span class="num">03</span>
+        <h3>The two problems can solve each other</h3>
+        <p>Biogas digestion turns the waste problem into the power solution — but the equipment, setup, and site work need funding to get started.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2>From bin to breaker box</h2>
+    </div>
+    <div class="how-list">
+      <div class="how-item">
+        <div class="how-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7c9a58" stroke-width="1.8"><path d="M4 8h16l-1.5 12h-13L4 8Z"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg>
+        </div>
+        <div>
+          <h3>Collect organic waste</h3>
+          <p>Food scraps, farm residue, and other organic matter are gathered from the surrounding community instead of being dumped or burned.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7c9a58" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M9 15c1-1 2-1 3 0s2 1 3 0"/></svg>
+        </div>
+        <div>
+          <h3>Break it down in the digester</h3>
+          <p>The waste ferments inside a sealed digester tank, where bacteria break it down and release biogas as a byproduct.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f2b705" stroke-width="1.8"><path d="M13 2 L4 14 H11 L9 22 L20 9 H13 L13 2Z"/></svg>
+        </div>
+        <div>
+          <h3>Convert gas into electricity</h3>
+          <p>The captured biogas fuels a generator that produces electricity, which is routed to homes, businesses, or the local grid.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="progress">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Where we are</span>
+      <h2>Progress so far</h2>
+    </div>
+    <div class="progress-card">
+      <div class="progress-top">
+        <span class="amount">₦[RAISED SO FAR]</span>
+        <span class="goal">raised of ₦[FUNDING GOAL] goal</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="progressBar"></div></div>
+      <p class="progress-note">[Insert a short, honest note on current funding status here.]</p>
+
+      <div class="milestones">
+        <div class="milestone">
+          <span class="tag">Site</span>
+          <p>[Status of site selection / land access]</p>
+        </div>
+        <div class="milestone">
+          <span class="tag">Equipment</span>
+          <p>[Status of digester and generator procurement]</p>
+        </div>
+        <div class="milestone">
+          <span class="tag">Target</span>
+          <p>[Target date for first electricity output]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="donate-section" id="donate">
+  <div class="wrap">
+    <div class="donate-card">
+      <h2>Fuel the first digester</h2>
+      <p>Every donation goes directly toward site setup, the digester tank, and the generator that turns this from a plan into a working plant.</p>
+
+      <div class="amount-grid">
+        <button class="amount-btn" data-amt="1000">₦1,000</button>
+        <button class="amount-btn active" data-amt="5000">₦5,000</button>
+        <button class="amount-btn" data-amt="15000">₦15,000</button>
+        <button class="amount-btn" data-amt="50000">₦50,000</button>
+      </div>
+
+      <div class="custom-amount">
+        <span>₦</span>
+        <input type="number" id="customAmount" placeholder="Enter a custom amount" min="100">
+      </div>
+
+      <div class="pay-options">
+        <button class="pay-btn paystack" id="paystackBtn">Donate with Paystack</button>
+        <button class="pay-btn flutterwave" id="flutterwaveBtn">Donate with Flutterwave</button>
+      </div>
+
+      <p class="donate-note">Payments are processed securely by Paystack / Flutterwave. CHIVOLT Energies does not store your card details.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="f-logo">CHIVOLT Energies</span>
+    <div class="f-links">
+      <a href="#how">How it works</a>
+      <a href="#progress">Progress</a>
+      <a href="mailto:REPLACE_WITH_CONTACT_EMAIL">Contact</a>
+    </div>
+  </div>
+  <p class="f-bottom">© 2026 CHIVOLT Energies — Waste to Watts. [Insert location / registration status if applicable.]</p>
+</footer>
+
+<script>
+  // Live progress bar: pulls the real total raised from /api/get-total,
+  // which reads from Supabase (updated automatically by the webhooks).
+  const FUNDING_GOAL = 2000000; // <-- set this to the real goal in Naira
+
+  async function loadProgress(){
+    try{
+      const res = await fetch('/api/get-total');
+      const { total } = await res.json();
+      const pct = Math.min(100, (total / FUNDING_GOAL) * 100);
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.querySelector('.progress-top .amount').textContent =
+        '₦' + total.toLocaleString();
+      document.querySelector('.progress-top .goal').textContent =
+        'raised of ₦' + FUNDING_GOAL.toLocaleString() + ' goal';
+    }catch(e){
+      console.error('Could not load live total', e);
+    }
+  }
+  loadProgress();
+
+  // Amount selector
+  const amountBtns = document.querySelectorAll('.amount-btn');
+  const customInput = document.getElementById('customAmount');
+  let selectedAmount = 5000;
+
+  amountBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      amountBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedAmount = parseInt(btn.dataset.amt, 10);
+      customInput.value = '';
+    });
+  });
+
+  customInput.addEventListener('input', () => {
+    if (customInput.value) {
+      amountBtns.forEach(b => b.classList.remove('active'));
+      selectedAmount = parseInt(customInput.value, 10) || 0;
+    }
+  });
+
+  // ---- Paystack integration ----
+  // Sign up at https://paystack.com, get your public key, and replace below.
+  document.getElementById('paystackBtn').addEventListener('click', () => {
+    if (!selectedAmount || selectedAmount < 100) {
+      alert('Please choose or enter a valid amount (minimum ₦100).');
+      return;
+    }
+    if (typeof PaystackPop === 'undefined') {
+      alert('Paystack script not loaded. Add the Paystack inline script tag before this script, or connect your Paystack account to enable live payments.');
+      return;
+    }
+    const handler = PaystackPop.setup({
+      key: 'REPLACE_WITH_PAYSTACK_PUBLIC_KEY',
+      email: 'donor@example.com', // consider adding an email input field
+      amount: selectedAmount * 100, // Paystack expects amount in kobo
+      currency: 'NGN',
+      callback: function(response){
+        alert('Thank you! Payment reference: ' + response.reference);
+      },
+      onClose: function(){}
+    });
+    handler.openIframe();
+  });
+
+  // ---- Flutterwave integration ----
+  // Sign up at https://flutterwave.com, get your public key, and replace below.
+  document.getElementById('flutterwaveBtn').addEventListener('click', () => {
+    if (!selectedAmount || selectedAmount < 100) {
+      alert('Please choose or enter a valid amount (minimum ₦100).');
+      return;
+    }
+    if (typeof FlutterwaveCheckout === 'undefined') {
+      alert('Flutterwave script not loaded. Add the Flutterwave inline script tag before this script, or connect your Flutterwave account to enable live payments.');
+      return;
+    }
+    FlutterwaveCheckout({
+      public_key: 'REPLACE_WITH_FLUTTERWAVE_PUBLIC_KEY',
+      tx_ref: 'chivolt-' + Date.now(),
+      amount: selectedAmount,
+      currency: 'NGN',
+      payment_options: 'card, banktransfer, ussd',
+      customer: {
+        email: 'donor@example.com',
+      },
+      customizations: {
+        title: 'CHIVOLT Energies Donation',
+        description: 'Support for the Waste to Watts biogas project',
+      },
+      callback: function(data){
+        alert('Thank you! Your donation was received.');
+      },
+      onclose: function(){},
+    });
+  });
+</script>
+
+<!--
+  To activate live payments, add these script tags in <head> before </head>:
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+-->
+
+</body>
+</html>
